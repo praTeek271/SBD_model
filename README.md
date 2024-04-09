@@ -44,8 +44,10 @@ The model demonstrates promising performance in detecting suicidal tendencies in
 - Gather additional labeled data to enhance model training.
 
 ## Contributors
-- John Doe
-- Jane Smith
+- [Prateek Kumar Singh](https://github.com/prateek271)
+- [Ritika Singh](https://www.linkedin.com/in/ritika-singh-600714222)
+- [Shadiya Khan](https://www.linkedin.com/in/shadiya-khan-57370a222)
+- Bharkha Bharatwaj
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

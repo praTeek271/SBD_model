@@ -193,6 +193,7 @@
     #         sys.exit()  # Uncomment this line if you want to exit on error
 #--------------------------------------------------------------------------------------------------
 import threading
+from threading import Thread
 import pandas as pd
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -329,21 +330,18 @@ def evaluating_SDM(model, X_test, y_test):
     X_test = X_test.dropna()
     y_test = y_test.dropna()
 
-    def update_progress_bar(pbar):
-        for _ in range(len(X_test)):
-            time.sleep(0.05)  # Faster animation speed
-            pbar.update(1)
-        pbar.close()
+    def update_progress_bar(term_loading):
+        term_loading.show('Evaluating Model...', finish_message='Evaluation Finished!✅')
+        evaluate_model_score(model, X_test, y_test)
+        term_loading.finished = True
 
     # Start a thread for the progress bar
-    pbar_thread = threading.Thread(target=update_progress_bar, args=(TermLoading(),))
-    pbar_thread.start()
-
-    # Evaluate the model score in the main thread
-    evaluate_model_score(model, X_test, y_test)
+    term_loading = TermLoading()
+    progress_bar_thread = Thread(target=update_progress_bar, args=(term_loading,))
+    progress_bar_thread.start()
 
     # Wait for the progress bar thread to finish
-    pbar_thread.join()
+    progress_bar_thread.join()
 
 def main():
     load_necessary_lib()
@@ -361,7 +359,7 @@ def main():
     model = start_model(X_train, y_train, train_model=False)
 
     # Evaluate the model
-    evaluating_SDM(model, X_test, y_test)
+    # evaluating_SDM(model, X_test, y_test)
 
     cont = True
     while cont:
@@ -384,8 +382,6 @@ def main():
                 # Output prediction result
                 # predicted_label = 'suicidal' if prediction == 0 else 'non-suicide'
                 print(f"Prediction: >> {prediction}\n".rjust(120," "))
-
-                return(data,X_train, X_test, y_train, y_test,model,prediction,prediction_scores)
             else:
                 print("Empty input. Please provide a response.\n".center(100,"="))
         except Exception as e:
@@ -415,7 +411,7 @@ def print_matrix_img(y_test, prediction):
 if __name__ == "__main__":
     try:
         data,X_train, X_test, y_train, y_test,model,prediction,prediction_scores=main()
-        print_matrix_img(y_test, prediction)
+        # print_matrix_img(y_test, prediction)
     except KeyboardInterrupt:
         print("\nExiting the program.")
     except Exception as e:

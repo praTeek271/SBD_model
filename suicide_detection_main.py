@@ -192,7 +192,6 @@
     #         print("An error occurred:", e)
     #         sys.exit()  # Uncomment this line if you want to exit on error
 #--------------------------------------------------------------------------------------------------
-
 import threading
 import pandas as pd
 import nltk
@@ -204,7 +203,7 @@ from sklearn.pipeline import make_pipeline
 import joblib
 import os
 import sys
-from tqdm import tqdm
+from TermLoading import TermLoading  # Import the TermLoading class
 import time
 from datasets import load_dataset
 
@@ -294,8 +293,15 @@ def preprocess_text_with_progress(data, text_column='text', label_column='class'
         filtered_tokens = [word for word in tokens if word.isalnum() and word not in stop_words]
         return ' '.join(filtered_tokens)
 
-    tqdm.pandas(desc="Preprocessing Text")
-    processed_text = data[text_column].progress_apply(preprocess_text)
+    def update_progress_bar(loading):
+        loading.show('Preprocessing Text...', finish_message='Preprocessing Finished!✅')
+
+    # Start a thread for the progress bar
+    loading = TermLoading()
+    pbar_thread = threading.Thread(target=update_progress_bar, args=(loading,))
+    pbar_thread.start()
+
+    processed_text = data[text_column].apply(preprocess_text)
     
     # Combine preprocessed text with labels
     processed_data = pd.concat([processed_text, data[label_column]], axis=1)
@@ -303,26 +309,13 @@ def preprocess_text_with_progress(data, text_column='text', label_column='class'
     if save_file:
         processed_data.to_csv(save_file, index=False)
 
+    # Update the progress bar to indicate completion
+    loading.finished = True
+
+    # Wait for the progress bar thread to finish
+    pbar_thread.join()
+
     return processed_data
-
-# def evaluating_SDM(model, X_test, y_test):
-#     # Remove samples with NaN labels
-#     X_test = X_test.dropna()
-#     y_test = y_test.dropna()
-
-#     with tqdm(total=len(X_test), desc="Evaluating Model", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} {postfix}") as pbar:
-#         for _ in range(len(X_test)):
-#             time.sleep(0.01)  # Simulate evaluation time (remove in actual usage)
-#             pbar.update(1)
-
-#     print("Evaluating Model")
-#     # print(X_test,"<<----x_test\n")
-#     # print(y_test,"<<----y_test\n")
-#     try:
-#         accuracy = model.score(X_test, y_test)
-#         print("\nModel Accuracy on Test Set:", round(accuracy * 100, 3), "%")
-#     except Exception as e:
-#         print("Error evaluating model:", e)
 
 def evaluate_model_score(model, X_test, y_test):
     try:
@@ -343,7 +336,7 @@ def evaluating_SDM(model, X_test, y_test):
         pbar.close()
 
     # Start a thread for the progress bar
-    pbar_thread = threading.Thread(target=update_progress_bar, args=(tqdm(total=len(X_test), desc="Evaluating Model", bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} {postfix}"),))
+    pbar_thread = threading.Thread(target=update_progress_bar, args=(TermLoading(),))
     pbar_thread.start()
 
     # Evaluate the model score in the main thread
@@ -368,7 +361,7 @@ def main():
     model = start_model(X_train, y_train, train_model=False)
 
     # Evaluate the model
-    # evaluating_SDM(model, X_test, y_test)
+    evaluating_SDM(model, X_test, y_test)
 
     cont = True
     while cont:
@@ -398,11 +391,35 @@ def main():
         except Exception as e:
             print("Error processing user input:", e)
 
+
+def print_matrix_img(y_test, prediction):
+    from sklearn.metrics import confusion_matrix
+
+    # Assuming 'y_test' and 'prediction' are available from the main function
+    def create_confusion_matrix(y_test, prediction):
+        tn, fp, fn, tp = confusion_matrix(y_test, prediction).ravel()
+        confusion_matrix_data = {
+            'True Positive': tp,
+            'True Negative': tn,
+            'False Positive': fp,
+            'False Negative': fn
+        }
+        return confusion_matrix_data
+
+    # Call this function with 'y_test' and 'prediction' from the main function
+    conf_matrix_data = create_confusion_matrix(y_test, prediction)
+    print(conf_matrix_data)
+
+
+
 if __name__ == "__main__":
     try:
         data,X_train, X_test, y_train, y_test,model,prediction,prediction_scores=main()
+        print_matrix_img(y_test, prediction)
     except KeyboardInterrupt:
         print("\nExiting the program.")
     except Exception as e:
         print("An error occurred:", e)
         sys.exit()  # Uncomment this line if you want to exit on error
+
+

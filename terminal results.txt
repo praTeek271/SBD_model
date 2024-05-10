@@ -1,0 +1,140 @@
+Microsoft Windows [Version 10.0.22631.3527]
+(c) Microsoft Corporation. All rights reserved.
+
+(ev_ker) D:\Lucifer-Drive\Programs\SBD_model>d:/Lucifer-Drive/Programs/SBD_model/ev_ker/Scripts/python.exe d:/Lucifer-Drive/Programs/SBD_model/suicide_detection_main.py
+File exists
+Database suicide_dataset.csv loaded ...._
+
+Preprocessing Finished!✅
+
+------------------------------------------------------start_model-------------------------------------------------------
+generating PREDICTIONS ____________
+{'True Positive': 1111, 'True Negative': 1297, 'False Positive': 12098, 'False Negative': 20382}
+Precision: 0.08
+Recall: 0.05
+F1-score: 0.06
+
+(ev_ker) D:\Lucifer-Drive\Programs\SBD_model>d:/Lucifer-Drive/Programs/SBD_model/ev_ker/Scripts/python.exe d:/Lucifer-Drive/Programs/SBD_model/test.py
+⡿ loading...Done
+
+(ev_ker) D:\Lucifer-Drive\Programs\SBD_model>
+ *  History restored 
+
+Microsoft Windows [Version 10.0.22631.3527]
+(c) Microsoft Corporation. All rights reserved.
+
+(ev_ker) D:\Lucifer-Drive\Programs\SBD_model>py suicide_detection_main.py
+File exists
+Database suicide_dataset.csv loaded ...._
+
+⣟ Preprocessing Text...
+Exiting the program.
+
+(ev_ker) D:\Lucifer-Drive\Programs\SBD_model>py suicide_detection_main.py
+[nltk_data] Downloading package stopwords to
+[nltk_data]     C:\Users\anton\AppData\Roaming\nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+[nltk_data] Downloading package punkt to
+[nltk_data]     C:\Users\anton\AppData\Roaming\nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+Libraries loaded successfully
+File exists
+Database suicide_dataset.csv loaded ...._
+------------>>>>> Data loaded <<<<<-----------
+
+Preprocessing Finished!✅
+
+Data split done.
+------------------------------------------------------start_model-------------------------------------------------------
+starting model training.........
+.............................................................................................................*..............................................................*
+optimization finished, #iter = 171111
+obj = -27510.419634, rho = -0.999497
+nSV = 24667, nBSV = 455
+Total nSV = 24667
+................................................................................................................*.............................................................*.*
+optimization finished, #iter = 173712
+obj = -27625.297807, rho = -0.999500
+nSV = 24751, nBSV = 443
+Total nSV = 24751
+.............................................................................................................*..............................................................*
+optimization finished, #iter = 171011
+obj = -27425.374830, rho = -0.999500
+nSV = 24704, nBSV = 420
+Total nSV = 24704
+..............................................................................................................*................................................................*.....*
+optimization finished, #iter = 179131
+obj = -27458.720830, rho = -0.999490
+nSV = 24687, nBSV = 420
+Total nSV = 24687
+...............................................................................................................*.............................................................*
+optimization finished, #iter = 172899
+obj = -27720.748546, rho = -0.999495
+nSV = 24778, nBSV = 446
+Total nSV = 24778
+.............................................................................................................................................*.................................................................................*.*
+optimization finished, #iter = 222895
+obj = -37159.558255, rho = 1.035579
+nSV = 28822, nBSV = 699
+Total nSV = 28822
+[LibSVM]Model trained successfully.
+              precision    recall  f1-score   support
+
+           0       0.90      0.89      0.90     10793
+           1       0.93      0.94      0.93     17117
+
+    accuracy                           0.92     27910
+   macro avg       0.92      0.91      0.92     27910
+weighted avg       0.92      0.92      0.92     27910
+
+Error saving model: 'SVC' object has no attribute 'save'
+Enter your response: hi
+Error processing user input: could not convert string to float: 'hi'
+Enter your response: quit
+File exists
+Database suicide_dataset.csv loaded ...._
+
+Preprocessing Finished!✅
+
+------------------------------------------------------start_model-------------------------------------------------------
+C:\Users\anton\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\base.py:376: InconsistentVersionWarning: Trying to unpickle estimator TfidfTransformer from version 1.4.1.post1 when using version 1.4.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\anton\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\base.py:376: InconsistentVersionWarning: Trying to unpickle estimator TfidfVectorizer from version 1.4.1.post1 when using version 1.4.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\anton\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\base.py:376: InconsistentVersionWarning: Trying to unpickle estimator SVC from version 1.4.1.post1 when using version 1.4.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\anton\AppData\Local\Programs\Python\Python312\Lib\site-packages\sklearn\base.py:376: InconsistentVersionWarning: Trying to unpickle estimator Pipeline from version 1.4.1.post1 when using version 1.4.2. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+generating PREDICTIONS ____________
+{'True Positive': 1111, 'True Negative': 1297, 'False Positive': 12098, 'False Negative': 20382}
+calling evalute function
+
+Exiting the program.
+
+(ev_ker) D:\Lucifer-Drive\Programs\SBD_model>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,36 @@
+<html>
+
+<head>
+    <title>Test</title>
+</head>
+
+<body>
+    <h1>Test</h1>
+    <p>This is a test page.</p>
+
+    <pre><div class="flex flex-col rounded-lg bg-bg-400 overflow-hidden"><div class="flex justify-between items-center py-1.5 px-3"><div><p class="text-xs text-text-400">python</p></div><button class="flex flex-row gap-1 items-center hover:bg-bg-200 p-1 py-0.5 rounded-md transition-opacity delay-100 text-xs"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 256 256" class="mr-1 text-text-500"><path d="M200,32H163.74a47.92,47.92,0,0,0-71.48,0H56A16,16,0,0,0,40,48V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm-72,0a32,32,0,0,1,32,32H96A32,32,0,0,1,128,32Zm72,184H56V48H82.75A47.93,47.93,0,0,0,80,64v8a8,8,0,0,0,8,8h80a8,8,0,0,0,8-8V64a47.93,47.93,0,0,0-2.75-16H200Z"></path></svg><span class="text-text-500">Copy code</span></button></div><div><div class="code-block__code !my-0 !rounded-t-lg !text-sm !leading-relaxed" style="background: rgb(40, 44, 52); color: rgb(171, 178, 191); text-shadow: rgba(0, 0, 0, 0.3) 0px 1px; font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace; direction: ltr; text-align: left; white-space: pre; word-spacing: normal; word-break: normal; line-height: 1.5; tab-size: 2; hyphens: none; padding: 1em; margin: 0.5em 0px; overflow: auto; border-radius: 0.3em;"><code class="language-python" style="background: rgb(40, 44, 52); color: rgb(171, 178, 191); text-shadow: rgba(0, 0, 0, 0.3) 0px 1px; font-family: &quot;Fira Code&quot;, &quot;Fira Mono&quot;, Menlo, Consolas, &quot;DejaVu Sans Mono&quot;, monospace; direction: ltr; text-align: left; white-space: pre; word-spacing: normal; word-break: normal; line-height: 1.5; tab-size: 2; hyphens: none;"><span><span class="token decorator annotation" style="color: rgb(171, 178, 191);">@log_exceptions</span><span>
+</span></span><span><span></span><span class="token" style="color: rgb(198, 120, 221);">def</span><span> </span><span class="token" style="color: rgb(97, 175, 239);">train_model_SDM</span><span class="token" style="color: rgb(171, 178, 191);">(</span><span>X_train</span><span class="token" style="color: rgb(171, 178, 191);">,</span><span> y_train</span><span class="token" style="color: rgb(171, 178, 191);">)</span><span class="token" style="color: rgb(171, 178, 191);">:</span><span>
+</span></span><span><span>    </span><span class="token" style="color: rgb(92, 99, 112); font-style: italic;"># Create a TfidfVectorizer with the optimal n-gram range</span><span>
+</span></span><span><span>    vectorizer </span><span class="token" style="color: rgb(97, 175, 239);">=</span><span> TfidfVectorizer</span><span class="token" style="color: rgb(171, 178, 191);">(</span><span>ngram_range</span><span class="token" style="color: rgb(97, 175, 239);">=</span><span class="token" style="color: rgb(171, 178, 191);">(</span><span class="token" style="color: rgb(209, 154, 102);">1</span><span class="token" style="color: rgb(171, 178, 191);">,</span><span> </span><span class="token" style="color: rgb(209, 154, 102);">3</span><span class="token" style="color: rgb(171, 178, 191);">)</span><span class="token" style="color: rgb(171, 178, 191);">)</span><span>  </span><span class="token" style="color: rgb(92, 99, 112); font-style: italic;"># Unigrams, bigrams, and trigrams</span><span>
+</span></span><span>
+</span><span><span>    </span><span class="token" style="color: rgb(92, 99, 112); font-style: italic;"># Create the SVC classifier with the optimal hyperparameters</span><span>
+</span></span><span><span>    classifier </span><span class="token" style="color: rgb(97, 175, 239);">=</span><span> SVC</span><span class="token" style="color: rgb(171, 178, 191);">(</span><span>C</span><span class="token" style="color: rgb(97, 175, 239);">=</span><span class="token" style="color: rgb(209, 154, 102);">10</span><span class="token" style="color: rgb(171, 178, 191);">,</span><span> gamma</span><span class="token" style="color: rgb(97, 175, 239);">=</span><span class="token" style="color: rgb(209, 154, 102);">0.1</span><span class="token" style="color: rgb(171, 178, 191);">,</span><span> kernel</span><span class="token" style="color: rgb(97, 175, 239);">=</span><span class="token" style="color: rgb(152, 195, 121);">'rbf'</span><span class="token" style="color: rgb(171, 178, 191);">,</span><span> probability</span><span class="token" style="color: rgb(97, 175, 239);">=</span><span class="token" style="color: rgb(209, 154, 102);">True</span><span class="token" style="color: rgb(171, 178, 191);">,</span><span> verbose</span><span class="token" style="color: rgb(97, 175, 239);">=</span><span class="token" style="color: rgb(209, 154, 102);">True</span><span class="token" style="color: rgb(171, 178, 191);">)</span><span>
+</span></span><span>
+</span><span><span>    </span><span class="token" style="color: rgb(92, 99, 112); font-style: italic;"># Create a pipeline with the vectorizer and classifier</span><span>
+</span></span><span><span>    model </span><span class="token" style="color: rgb(97, 175, 239);">=</span><span> make_pipeline</span><span class="token" style="color: rgb(171, 178, 191);">(</span><span>vectorizer</span><span class="token" style="color: rgb(171, 178, 191);">,</span><span> classifier</span><span class="token" style="color: rgb(171, 178, 191);">)</span><span>
+</span></span><span>
+</span><span><span>    </span><span class="token" style="color: rgb(92, 99, 112); font-style: italic;"># Fit the model with the training data</span><span>
+</span></span><span><span>    model</span><span class="token" style="color: rgb(171, 178, 191);">.</span><span>fit</span><span class="token" style="color: rgb(171, 178, 191);">(</span><span>X_train</span><span class="token" style="color: rgb(171, 178, 191);">,</span><span> y_train</span><span class="token" style="color: rgb(171, 178, 191);">)</span><span>
+</span></span><span>
+</span><span><span>    </span><span class="token" style="color: rgb(198, 120, 221);">print</span><span class="token" style="color: rgb(171, 178, 191);">(</span><span class="token" style="color: rgb(152, 195, 121);">"Model trained successfully."</span><span class="token" style="color: rgb(171, 178, 191);">)</span><span>
+</span></span><span>
+</span><span><span>    </span><span class="token" style="color: rgb(92, 99, 112); font-style: italic;"># Save the trained model</span><span>
+</span></span><span><span>    save_model</span><span class="token" style="color: rgb(171, 178, 191);">(</span><span>model</span><span class="token" style="color: rgb(171, 178, 191);">)</span><span>
+</span></span><span>
+</span><span><span>    </span><span class="token" style="color: rgb(198, 120, 221);">return</span><span> model</span>
+</span></code></div></div>
+</div></pre>
+
+</body>
+
+</html>

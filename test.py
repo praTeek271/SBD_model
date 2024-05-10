@@ -8,7 +8,6 @@
 
 # def print_confusion_matrix(confusion_matrix, class_names, figsize = (10,7), fontsize=14):
 #     """Prints a confusion matrix, as returned by sklearn.metrics.confusion_matrix, as a heatmap.
-    
 #     Arguments
 #     ---------
 #     confusion_matrix: numpy.ndarray
@@ -53,16 +52,16 @@ import time
 from tqdm import tqdm
 
 def func(t):
-    print("Start")
+    
     time.sleep(t)
-    print("End")
+    
 
 
 def main():
     symbols = ['⣾', '⣷', '⣯', '⣟', '⡿', '⢿', '⣻', '⣽']
     i = 0
     d=0
-    while d<1000:
+    while d<100:
         i = (i + 1) % len(symbols)
         print('\r\033[K%s loading...' % symbols[i], flush=True, end='')
         time.sleep(0.05)

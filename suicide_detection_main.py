@@ -83,11 +83,12 @@ def preprocess_text(texts):
     # tokenized_texts = [nltk.word_tokenize(text.lower()) for text in texts]
     # filtered_tokens = [[word for word in tokens if word.isalnum() and word not in stop_words] for tokens in tokenized_texts]
     # preprocessed_texts = [' '.join(tokens) for tokens in filtered_tokens]
-    # return np.array(preprocessed_texts)
+    # return preprocessed_texts
     stop_words = set(stopwords.words('english'))
     tokens = nltk.word_tokenize(texts.lower())
     filtered_tokens = [word for word in tokens if word.isalnum() and word not in stop_words]
     return ' '.join(filtered_tokens)
+    # return filtered_tokens  # Return a list of tokens
 
 
 def train_model_SDM(X_train, y_train):
@@ -106,11 +107,14 @@ def train_model_SDM(X_train, y_train):
     
     ngram_range = (1, 3)  # Using trigrams
     vectorizer = TfidfVectorizer(ngram_range=ngram_range, max_df=0.9, min_df=5)
+
     X_train_vec = vectorizer.fit_transform(X_train)
     X_test_vec = vectorizer.transform(X_test)
+    
     model = SVC(kernel='linear', C=10, verbose=True, probability=True)
     model.fit(X_train_vec, y_train)
     print("Model trained successfully.")
+    joblib.dump(vectorizer, 'suicide_detection_vectorizer.pkl')
     
     # Evaluate the model
     y_pred = model.predict(X_test_vec)
@@ -118,7 +122,7 @@ def train_model_SDM(X_train, y_train):
     print(report)
 
     save_model(model)
-    return model
+    return model, vectorizer
 
 def save_model(model):
     """
@@ -174,20 +178,18 @@ def start_model(X_train, y_train, train_model=False):
             TfidfVectorizer: Fitted vectorizer used for training.
     """
     print('start_model'.center(120, "-"))
-    if not train_model and os.path.exists("suicide_detection_model.pkl"):
+    if not train_model and os.path.exists("suicide_detection_model.pkl") and os.path.exists("suicide_detection_vectorizer.pkl"):
         try:
             model = joblib.load('suicide_detection_model.pkl')
-            vectorizer = joblib.load('suicide_detection_vectorizer.pkl')  # Load the vectorizer
+            vectorizer = joblib.load('suicide_detection_vectorizer.pkl')
             return model, vectorizer
         except Exception as e:
             print("Error loading the model:", e)
+
     else:
-        print("starting model training.........")
-        model = train_model_SDM(X_train, y_train)
-        vectorizer = TfidfVectorizer()
-        vectorizer.fit(X_train)
-        joblib.dump(model, 'suicide_detection_model.pkl')  # Save the trained model
-        joblib.dump(vectorizer, 'suicide_detection_vectorizer.pkl')  # Save the fitted vectorizer
+        print("Starting model training......")
+        model, vectorizer = train_model_SDM(X_train, y_train)
+        joblib.dump(model, 'suicide_detection_model.pkl')
         return model, vectorizer
 
 def preprocess_text_with_progress(data, text_column='text', label_column='class', save_file=None):
@@ -262,10 +264,16 @@ def create_confusion_matrix_from_csv(csv_path):
     # Split data into train and test sets
     X_train, X_test, y_train, y_test = train_test_split(data_processed['text'], data_processed['class'], test_size=0.2, random_state=42)
 
-    model = start_model(X_train, y_train,train_model=False)
+    model,vectorizer = start_model(X_train, y_train,train_model=False)
 
     # Make predictions
     print("generating PREDICTIONS ____________")
+
+    # Transform text data into numerical features
+    X_train = vectorizer.transform(X_train)
+    X_test = vectorizer.transform(X_test)
+
+
     prediction = model.predict(X_test)
     
     # Convert predicted labels to integers
@@ -346,52 +354,53 @@ def main():
     print("Data split done.")
     start_time = time.time()
     # Train or load the model
-    # model = start_model(X_train, y_train,train_model=False)
     model, vectorizer = start_model(X_train, y_train, train_model=False)
-#-------------------------------------------------------------------
-    # vectorizer = TfidfVectorizer()
-    # # Fit the vectorizer on the training data
-    # vectorizer.fit(X_train)
-    # joblib.dump(vectorizer, 'suicide_detection_vectorizer.pkl')
-#-------------------------------------------------------------------
     end_time = time.time()
-    print(f"Total model trining time: {end_time - start_time} seconds")
+    print(f"Total model trining time: {round((end_time - start_time),4)} sec")
+
     # Evaluate the model
     # evaluating_SDM(model, X_test, y_test)
 
     cont = True
     while cont:
         # Accept user input
-        # try:
-        user_input = input("Enter your response: ").strip()
-        if user_input == "quit":
-            cont = False
-            del model, data,X_test,X_train,y_test,y_train,data_processed
-        elif user_input:
-            preprocessed_input = preprocess_text(user_input)
-            input_features = vectorizer.transform([preprocessed_input])
-            prediction = model.predict(input_features)[0]
-            prediction_scores = model.predict_proba(input_features)[0]
-            print("Prediction Score for Suicidal:  {:.2f}%".format(prediction_scores[1] * 100).rjust(100, " "))
-            print("Prediction Score for Non-Suicidal:  {:.2f}%".format(prediction_scores[0] * 100).rjust(100, " "))
-            print(f"Prediction: >> {prediction}\n".rjust(120, " "))
-        else:
-            print("Empty input. Please provide a response.\n".center(100,"="))
-        # except Exception as e:
-        #     print("Error processing user input:", e)
+        try:
+            user_input = input("Enter your response: ").strip()
+            if user_input == "quit":
+                cont = False
+                del model, data,X_test,X_train,y_test,y_train,data_processed,vectorizer
+            elif user_input:
+                preprocessed_input = preprocess_text(user_input)
+                input_features = vectorizer.transform([preprocessed_input])
+                prediction = model.predict(input_features)[0]
+                prediction_scores = model.predict_proba(input_features)[0]
+                print("Prediction Score for Suicidal:  {:.2f}%".format(prediction_scores[0] * 100).rjust(100, " "))
+                print("Prediction Score for Non-Suicidal:  {:.2f}%".format(prediction_scores[1] * 100).rjust(100, " "))
+                # raise red flag if the rate in prediction_score[0] is greater than 45%
+                red_flag= "🚩" if prediction_scores[0] > 0.45 else ""
+                pridiction_label= "Suicidal\t🔪" if prediction == 0 else "Non-Suicidal\t🙅"
+                print(f"Prediction: >> {pridiction_label}\n".rjust(120, " "))
+                if red_flag !="":
+                    print(f"Red Flag Alert: >> {red_flag}\n".rjust(120, " "))
+
+            else:
+                print("Empty input. Please provide a response.\n".center(100,"="))
+        except Exception as e:
+            print("Error processing user input:", e)
 
 
-# # if __name__ == "__main__":
-# try:
-#     main()
-#     # create_confusion_matrix_from_csv("suicide_dataset.csv")
-# except KeyboardInterrupt:
-#     print("\nExiting the program.")
-# except Exception as e:
-#     print("An error occurred:", e)
-#     sys.exit()  # Uncomment this line if you want to exit on error
+if __name__ == "__main__":
+    try:
+        main()
+        create_confusion_matrix_from_csv("suicide_dataset.csv")
+    except KeyboardInterrupt:
+        print("\nExiting the program.")
+    except Exception as e:
+        print("An error occurred:", e)
+        sys.exit()  # Uncomment this line if you want to exit on error
 
 
 
 
-main()
+# # main()
+# create_confusion_matrix_from_csv("suicide_dataset.csv")
